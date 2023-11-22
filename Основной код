@@ -1,0 +1,63 @@
+import random
+import logging
+from datetime import datetime
+
+# Настройка логгера
+logging.basicConfig(filename='guessing_game_log.txt', level=logging.INFO)
+
+def log_message(message):
+    """Логирование сообщения с датой и временем."""
+    log_entry = f"{datetime.now()} - {message}"
+    logging.info(log_entry)
+
+def generate_secret_number(N):
+    """Генерация случайного числа от 1 до N."""
+    secret_number = random.randint(1, N)
+    log_message(f"Сгенерировано загаданное число: {secret_number}")
+    return secret_number
+
+def user_guess(secret_number, guess):
+    """Проверка попытки пользователя и возврат результата."""
+    if guess == secret_number:
+        log_message("Пользователь угадал число!")
+        return "Вы угадали!"
+    elif guess < secret_number:
+        log_message("Попытка пользователя меньше загаданного числа.")
+        return "Меньше. Попробуйте еще раз."
+    else:
+        log_message("Попытка пользователя больше загаданного числа.")
+        return "Больше. Попробуйте еще раз."
+
+def play_guessing_game(N, k):
+    """Основная функция игры."""
+    log_message(f"Игра начата с числами N={N} и k={k}.")
+    secret_number = generate_secret_number(N)
+    
+    for i in range(k):
+        user_input = input("Попробуйте угадать число: ")
+        
+        try:
+            user_guess_num = int(user_input)
+            log_message(f"Попытка пользователя: {user_guess_num}")
+        except ValueError:
+            log_message("Ошибка ввода. Введите целое число.")
+            print("Ошибка ввода. Введите целое число.")
+            continue
+        
+        result = user_guess(secret_number, user_guess_num)
+        print(result)
+        if result == "Вы угадали!":
+            break
+
+    log_message("Игра завершена.")
+    print(f"Загаданное число было: {secret_number}")
+
+if __name__ == "__main__":
+    try:
+        N = int(input("Введите верхнюю границу диапазона (N): "))
+        k = int(input("Введите количество попыток (k): "))
+    except ValueError:
+        log_message("Ошибка ввода. Введите целые числа.")
+        print("Ошибка ввода. Введите целые числа.")
+    else:
+        play_guessing_game(N, k)
